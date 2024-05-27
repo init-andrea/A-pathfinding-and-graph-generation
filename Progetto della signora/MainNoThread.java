@@ -2,7 +2,7 @@ import java.util.List;
 
 public class MainNoThread {
     public static void main(String[] args) {
-        int numTests = 100000; // Number of random grids to test
+        int numTests = 1000; // Number of random grids to test
         int rows = 100;
         int cols = 100;
         double obstacleProbability = 0.30; // Chance of obstacle

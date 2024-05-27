@@ -3,8 +3,8 @@ import java.util.List;
 public class MainSingleInstanceNoThread {
     public static void main(String[] args) {
         int rows = 30;
-        int cols = 60;
-        double obstacleProbability = 0.40; // 30% chance of obstacle
+        int cols = 100;
+        double obstacleProbability = 0.30; // 30% chance of obstacle
 
         int[][] grid = RandomGridGenerator.generateRandomGrid(rows, cols, obstacleProbability);
 
