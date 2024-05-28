@@ -11,7 +11,7 @@ public class AStar {
         PriorityQueue<NodeComp> openSet = new PriorityQueue<>();
         Map<Node, NodeComp> closedSet = new HashMap<>();
 
-        NodeComp startNode = new NodeComp(start, null, 0, heuristic(start, goal));
+        NodeComp startNode = new NodeComp(start, null, 0, Utilities.euclideanDistance(start, goal));
         
         // nodi ancora da esplorare
         openSet.add(startNode);
@@ -45,9 +45,9 @@ public class AStar {
 
             // se non siamo arrivati all'obiettivo
             for (Edge edge : next.getNode().getEdges()){
-                Node toNode = edge.getTo();
+                Node toNode = edge.getDest();
                 double costSoFar = next.getCostSoFar() + edge.getCost();
-                double estimatedCostTotal = costSoFar + heuristic(toNode, goal);
+                double estimatedCostTotal = costSoFar + Utilities.euclideanDistance(toNode, goal);
 
                 if (closedSet.containsKey(toNode)) {
                     continue;
@@ -66,11 +66,5 @@ public class AStar {
     }
 
     // distanza euclidea come euristica nel caso generale, può essere Manhattan se il grafo è una griglia
-    private double heuristic(Node a, Node b) {
-        double xS = a.getX();
-        double yS = a.getY();
-        double xG = b.getX();
-        double yG = b.getY();
-        return Math.sqrt((xG-xS) * (xG-xS) + (yG-yS) * (yG-yS));
-    }
+    
 }

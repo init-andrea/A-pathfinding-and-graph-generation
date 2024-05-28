@@ -1,14 +1,14 @@
 public class Edge {
-    private Node from, to;
+    private Node src, dest;
     private double cost;
 
-    public Edge(Node from, Node to, double cost) {
-        this.from = from;
-        this.to = to;
+    public Edge(Node src, Node dest, double cost) {
+        this.src = src;
+        this.dest = dest;
         this.cost = cost;
     }
 
-    public Node getFrom() {return from;}
-    public Node getTo() {return to;}
+    public Node getSrc() {return src;}
+    public Node getDest() {return dest;}
     public double getCost() {return cost;}
 }

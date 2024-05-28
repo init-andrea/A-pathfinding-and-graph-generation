@@ -4,11 +4,13 @@ import java.util.Scanner;
 
 public class Experiments {
 
+    // TODO mettere genera grafico nel main principale e mettere statistiche in output per molti esperimenti
     public static void main(String[] args) {
         Scanner userInput = new Scanner(System.in);
         System.out.println("Inserisci il numero di esperimenti da eseguire e poi premi invio: ");
         while (!userInput.hasNextInt()) {
             userInput.next();
+            System.out.println("Riprova, devi inserire un numero intero");
         }
         int numberOfExperiments = userInput.nextInt();
         userInput.close();
