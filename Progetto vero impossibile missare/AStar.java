@@ -17,7 +17,7 @@ public class AStar {
         openSet.add(startNode);
 
         // nodi già esplorati
-        closedSet.put(start, startNode);
+        //closedSet.put(start, startNode);
 
         while (!openSet.isEmpty()) { 
             NodeComp next = openSet.poll();

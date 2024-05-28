@@ -14,6 +14,14 @@ public class Node {
         this.edges = new ArrayList<>();
     }
 
+    // costruttore per inizializzare nodo con archi
+    public Node(String label, double x, double y, List<Edge> edges) {
+        this.label = label;
+        this.x = x;
+        this.y = y;
+        this.edges = edges;
+    }
+
     public double getX(){
         return this.x;
     }
@@ -22,8 +30,16 @@ public class Node {
         return this.y;
     }
 
+    public String getLabel(){
+        return this.label;
+    }
+
     public void addEdge(Node to, double cost){
         edges.add(new Edge(this, to, cost));
+    }
+
+    public void setEdges(List<Edge> edges){
+        this.edges = edges;
     }
 
     public List<Edge> getEdges(){
