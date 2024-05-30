@@ -22,6 +22,15 @@ public class Node {
         this.edges = edges;
     }
 
+    public boolean hasEdge(Node to){
+        for (Edge edge : edges) {
+            if (edge.getDest().equals(to)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public double getX(){
         return this.x;
     }

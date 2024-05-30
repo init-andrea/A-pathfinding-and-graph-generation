@@ -64,7 +64,5 @@ public class AStar {
         // non c'è nessun percorso da start a goal
         return null;
     }
-
-    // distanza euclidea come euristica nel caso generale, può essere Manhattan se il grafo è una griglia
     
 }

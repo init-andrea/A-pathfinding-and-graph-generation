@@ -1,98 +1,126 @@
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Experiments {
 
-    // TODO mettere genera grafico nel main principale e mettere statistiche in output per molti esperimenti
+    // scegliamo a tempo di esecuzione il numero di esperimenti che vogliamo eseguire, il numero di nodi e la probabilità per ogni grafo generato
     public static void main(String[] args) {
+        int numberOfExperiments;
+        int successfulExperiments = 0;
+        int failedExperiments = 0;
+        int numberOfNodes;
+        double probability;
+        Node start, goal;
         Scanner userInput = new Scanner(System.in);
-        System.out.println("Inserisci il numero di esperimenti da eseguire e poi premi invio: ");
+        Random rand = new Random(System.currentTimeMillis());
+        AStar aStar = new AStar();
+
+        // leggiamo il numero di esperimenti da eseguire
+        System.out.println("Inserisci il numero di esperimenti da eseguire e premi invio: ");
         while (!userInput.hasNextInt()) {
             userInput.next();
             System.out.println("Riprova, devi inserire un numero intero");
         }
-        int numberOfExperiments = userInput.nextInt();
+        numberOfExperiments = userInput.nextInt();
+        /*
+        // leggiamo il numero di nodi del grafo da generare
+        System.out.println("Inserisci il numero di nodi del grafo e premi invio: ");
+        while (!userInput.hasNextInt()) {
+            userInput.next();
+            System.out.println("Riprova, devi inserire un numero intero");
+        }
+        numberOfNodes = userInput.nextInt();
+
+        // leggiamo la probabilità di generare un arco tra due vertici     
+        System.out.println("Inserisci la probabilità (compresa tra 0 e 1) di generare un arco tra due vertici e premi invio:");
+        while (true) { 
+            if (userInput.hasNextDouble()) {
+                probability = userInput.nextDouble();
+                if (probability >= 0 && probability <= 1) {
+                    break;
+                } else {
+                    System.out.println("Riprova, devi inserire un numero compreso tra 0 e 1");
+                }
+            } else {
+                System.out.println("Riprova, devi inserire un numero");
+                userInput.next();       // togliamo l'input che non è valido dallo scanner
+            }
+        }
+         */
+        long startExperimentTime = System.nanoTime();
         userInput.close();
-        double successfulExperiments = 0;
-        double failedExperiments = 0;
+        int numberOfConnectedGraphs = 0;
+        long resAStar = 0;
 
         for (int counter = 0; counter < numberOfExperiments; counter++) {
-            Node start = new Node("Start", 0, 0);
-            Node goal = new Node("Goal", 5, 5);
 
-            Node s = new Node("s", 310, 80);
-            Node a = new Node("a", 80, 280);
-            Node d = new Node("d", 125, 520);
-            Node f = new Node("f", 270, 750);
-            Node b = new Node("b", 370, 340);
-            Node h = new Node("h", 410, 560);
-            Node g = new Node("g", 620, 710);
-            Node c = new Node("c", 845, 95);
-            Node i = new Node("i", 920, 500);
-            Node l = new Node("l", 1075, 320);
-            Node k = new Node("k", 1070, 630);
-            Node j = new Node("j", 1180, 490);
-            Node e = new Node("e", 972, 855);
+            // generiamo il grafo a partire dalla probabilità e numero di nodi dati
+            //Node[] nodes = Utilities.generateErdosRenyiGraph(numberOfNodes, probability);
+            Node[] nodes;
+            try {
+                nodes = GraphUtils.loadGraph("Nodes.txt", "Edges.txt");
+            } catch (IOException e) {
+                return;
+            }
+            //Utilities.printGraph(nodes);
+            int counterArchi = 0;
+            for (Node node : nodes) {
+                counterArchi += node.getEdges().size();
+            }
+            System.out.println(counterArchi);
+            if (Utilities.isConnected(nodes)) {
+                numberOfConnectedGraphs++;
+            }
 
-            s.addEdge(a, 700);
-            s.addEdge(b, 200);
-            s.addEdge(c, 300);
-            a.addEdge(s, 700);
-            a.addEdge(b, 300);
-            a.addEdge(d, 400);
-            b.addEdge(s, 200);
-            b.addEdge(a, 300);
-            b.addEdge(d, 400);
-            b.addEdge(h, 100);
-            d.addEdge(a, 400);
-            d.addEdge(b, 400);
-            d.addEdge(f, 500);
-            h.addEdge(b, 100);
-            h.addEdge(f, 300);
-            h.addEdge(g, 200);
-            f.addEdge(d, 500);
-            f.addEdge(h, 300);
-            g.addEdge(h, 200);
-            g.addEdge(e, 200);
-            c.addEdge(s, 300);
-            c.addEdge(l, 200);
-            l.addEdge(c, 200);
-            l.addEdge(i, 400);
-            l.addEdge(j, 400);
-            i.addEdge(l, 400);
-            i.addEdge(j, 600);
-            i.addEdge(k, 400);
-            j.addEdge(l, 400);
-            j.addEdge(i, 600);
-            j.addEdge(k, 400);
-            k.addEdge(i, 400);
-            k.addEdge(j, 400);
-            k.addEdge(e, 500);
-            e.addEdge(g, 200);
-            e.addEdge(k, 500);
+            // scegliamo a caso, tra i nodi del grafo, start e goal su cui far girare A*. Li cerchiamo non isolati
+            /*
+            do { 
+                start = nodes[rand.nextInt(nodes.length)];
+                if (start.getEdges().isEmpty()) System.out.println(start.getLabel());
+            } while (!start.getEdges().isEmpty());
+            do {
+                goal = nodes[rand.nextInt(nodes.length)];
+            } while (start == goal && !goal.getEdges().isEmpty());             // per assicurarci che start e goal non siano lo stesso nodo
+             */
+            start = nodes[rand.nextInt(nodes.length)];
+            //System.out.println("start: "+start.getLabel());
+            do {
+                goal = nodes[rand.nextInt(nodes.length)];
+            } while (start == goal);
+            //System.out.println("goal: "+goal.getLabel());
 
-            AStar aStar = new AStar();
-            long startTime = System.currentTimeMillis();
-            List<Node> bestPath = aStar.findPath(s, e);
-            long endTime = System.currentTimeMillis();
+            long startTime = System.nanoTime();
+            List<Node> bestPath = aStar.findPath(start, goal);
+            long endTime = System.nanoTime();
 
             if (bestPath != null) {
-                System.out.println("Percorso trovato: ");
+                System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " trovato: ");
                 successfulExperiments++;
                 for (Node n : bestPath) {
-                    System.out.print(n.getLabel() + " ");
+                    //System.out.print(n.getLabel() + " ");
                 }
-                System.out.println();
+                //System.out.println();
             } else {
-                System.out.println("Nessun percorso trovato");
+                //System.out.println("Nessun percorso trovato");
                 failedExperiments++;
             }
 
-            System.out.println("Tempo totale di esecuzione: " + (endTime - startTime) + " ms");
+            //System.out.println("Tempo di esecuzione esperimento " + counter + " : " + (endTime - startTime) + " ns");
+            resAStar += (endTime - startTime);
         }
-        System.out.println("Esperimenti che hanno avuto successo: " + successfulExperiments + ", " + (((successfulExperiments/numberOfExperiments) * 100)) + "%");
-        System.out.println("Esperimenti che sono falliti: " + failedExperiments + ", " + (((failedExperiments/numberOfExperiments) * 100)) + "%");
-
+        long endExperimentTime = System.nanoTime();
+        long totalTime = endExperimentTime - startExperimentTime;
+        System.out.println("Esperimenti che hanno avuto successo: " + successfulExperiments + ", " + ((((double) successfulExperiments / numberOfExperiments) * 100)) + "%");
+        System.out.println("Esperimenti che sono falliti: " + failedExperiments + ", " + ((((double) failedExperiments / numberOfExperiments) * 100)) + "%");
+        System.out.println("Grafi connessi: " + numberOfConnectedGraphs + ", il " + ((double) numberOfConnectedGraphs / numberOfExperiments * 100) + "%");
+        System.out.println("Tempo totale: " + (totalTime / 1000000) + " ms. Tempo di esecuzione medio: " + totalTime / numberOfExperiments + " ns");
+        //String resultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + probability + " " + successfulExperiments + " " + numberOfConnectedGraphs + " " + totalTime;
+        //System.out.println(resultsData);
+        //String aStarResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + probability + " " + (resAStar/numberOfExperiments);
+        //Utilities.writeToFile("Risultati.txt", resultsData);
+        //Utilities.writeToFile("RisultatiAStar.txt", aStarResultsData);
     }
 }
