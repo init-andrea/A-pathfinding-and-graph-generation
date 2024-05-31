@@ -1,8 +1,13 @@
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class Utilities {
@@ -111,19 +116,84 @@ public class Utilities {
         }
     }
 
-    /*
-    // test main class for graph generation
-    public static void main(String[] args) {
-        int iterations = 10000;
-        int connessoCounter = 0;
-        for (int i = 0; i < iterations; i++) {
-            if(isConnected(generateErdosRenyiGraph(200, 0.015))){
-                connessoCounter++;
+    public static Node[] loadGraphFromFiles(String nodesFilePath, String edgesFilePath, double probability) throws IOException {
+        Map<String, Node> nodeMap = new HashMap<>();
+        Random random = new Random();
+        
+        // Leggi il file Nodes.txt
+        try (BufferedReader br = new BufferedReader(new FileReader(nodesFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\s+");
+                String nodeId = parts[0];
+                double x = Double.parseDouble(parts[1]);
+                double y = Double.parseDouble(parts[2]);
+                Node node = new Node(nodeId, x, y);
+                nodeMap.put(nodeId, node);
+            }
+        } catch(FileNotFoundException e){
+            throw e;
+        }
+
+        // Leggi il file Edges.txt
+        try (BufferedReader br = new BufferedReader(new FileReader(edgesFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\s+");
+                //String edgeId = parts[0];
+                String startNodeId = parts[1];
+                String endNodeId = parts[2];
+                double distance = Double.parseDouble(parts[3]);
+
+                Node startNode = nodeMap.get(startNodeId);
+                Node endNode = nodeMap.get(endNodeId);
+
+                if (startNode != null && endNode != null) {
+                    startNode.addEdge(endNode, distance);
+                    //double pp = random.nextDouble();
+                    //System.out.println(pp);
+                    
+                    if (random.nextDouble() <= probability) {        // la probabilità di creare un secondo arco per grafo non orientato
+                        endNode.addEdge(startNode, distance);
+                    }
+                    
+                    //endNode.addEdge(startNode, distance);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw e;
+        }
+
+        int counterIsolati = 0;
+        for (Node node : nodeMap.values()) {
+            if (node.getEdges().isEmpty()) {
+                counterIsolati++;
             }
         }
-        //printGraph(generateErdosRenyiGraph(20, 0.2));
-        System.out.println(connessoCounter + " grafi connessi su " + iterations + ", il " + (((double)connessoCounter/iterations)*100) + "%");
-    } 
-    */
+        //System.out.print(counterIsolati + " isolati, ");
+        /*
+        // Crea una lista di nodi senza nodi isolati
+        List<Node> nodesWithEdges = new ArrayList<>();
+        int counter = 0;
+        int totCounter = 0;
+        for (Node node : nodeMap.values()) {
+            if (!node.getEdges().isEmpty()) {
+                nodesWithEdges.add(node);
+                counter++;
+                //System.out.println(counter);
+            }
+            totCounter++;
+            //System.out.println(totCounter);
+            if (totCounter==nodeMap.size()-1) break;
+        }
+
+        // Converti la lista in un array di Node
+        Node[] nodesArray = nodesWithEdges.toArray(new Node[0]);
+        return nodesArray;
+        */
+        Node[] nodesArray = nodeMap.values().toArray(new Node[0]);
+        return nodesArray;
+
+    }
 
 }

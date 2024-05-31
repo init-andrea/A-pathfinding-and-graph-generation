@@ -153,7 +153,7 @@ public class GraphPanel extends JPanel {
         //Node[] nodes = Utilities.generateErdosRenyiGraph(20, 0.1);
         Node[] nodes;
         try {
-            nodes = GraphUtils.loadGraph("Nodes.txt","Edges.txt");
+            nodes = Utilities.loadGraphFromFiles("Nodes.txt","Edges.txt", 0.3);
    
         } catch (IOException e) {
             return;
