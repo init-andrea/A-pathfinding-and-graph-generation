@@ -94,14 +94,12 @@ public class Experiments {
             Result result = aStar.findPath(start, goal);              // TODO mettere counter di quanti nodi vengono visitati
             long endTimeAStar = System.nanoTime();
             List<Node> bestPath = result.getPath();
-            System.out.println(result.getTotalCost());
 
             if (bestPath != null) {
-                System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " trovato: ");
+                System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " con costo " + result.getTotalCost() + " trovato: ");
                 successfulExperiments++;
                 for (Node n : bestPath) {
                     System.out.print(n.getLabel() + " ");
-                    // TODO aggiungere peso totale alla print
                 }
                 System.out.println();
             } else {

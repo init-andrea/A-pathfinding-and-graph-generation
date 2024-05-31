@@ -13,6 +13,9 @@ import java.util.Scanner;
 
 public class Utilities {
 
+    static final double maxXBound = 1000;
+    static final double maxYBound = 1000;
+
     public static String[] getInputFileNames(Scanner userInput){
         String[] nomiFile = new String[2];
         System.out.println("Scrivi il nome del file con i nodi: ");
@@ -96,8 +99,8 @@ public class Utilities {
 
         // scelta maxX e maxY con Random
         Random rand = new Random(System.currentTimeMillis());
-        double maxX = rand.nextDouble(1000);
-        double maxY = rand.nextDouble(1000);
+        double maxX = rand.nextDouble(maxXBound);
+        double maxY = rand.nextDouble(maxYBound);
 
         Node[] nodes = new Node[n];
         for (int i = 0; i < n; i++) {
