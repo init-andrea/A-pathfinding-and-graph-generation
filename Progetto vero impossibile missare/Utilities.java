@@ -9,9 +9,54 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Utilities {
 
+    public static String[] getInputFileNames(Scanner userInput){
+        String[] nomiFile = new String[2];
+        System.out.println("Scrivi il nome del file con i nodi: ");
+        nomiFile[0] = userInput.next();
+        System.out.println("Scrivi il nome del file con gli archi: ");
+        nomiFile[1] = userInput.next();
+        return nomiFile;
+    }
+
+    public static int getInputNodesNumber(Scanner userInput){
+        System.out.println("Inserisci il numero di nodi del grafo e premi invio: ");
+        while (!userInput.hasNextInt()) {
+            userInput.next();
+            System.out.println("Riprova, devi inserire un numero intero");
+        }
+        return userInput.nextInt();
+    }
+    
+    public static int getInputExperimentsNumber(Scanner userInput){
+        System.out.println("Inserisci il numero di esperimenti da eseguire e premi invio: ");
+        while (!userInput.hasNextInt()) {
+            userInput.next();
+            System.out.println("Riprova, devi inserire un numero intero");
+        }
+        return userInput.nextInt();
+    }
+    
+    public static double getInputProbability(Scanner userInput){
+        double probabilità;
+        System.out.println("Inserisci la probabilità (compresa tra 0 e 1) di generare un arco tra due vertici e premi invio:");
+        while (true) {
+            if (userInput.hasNextDouble()) {
+                probabilità = userInput.nextDouble();
+                if (probabilità >= 0 && probabilità <= 1) {
+                    return probabilità;
+                } else {
+                    System.out.println("Riprova, devi inserire un numero compreso tra 0 e 1");
+                }
+            } else {
+                System.out.println("Riprova, devi inserire un numero");
+                userInput.next();       // togliamo l'input che non è valido dallo scanner
+            }
+        }
+    }
     // distanza euclidea come euristica nel caso generale, può essere Manhattan se il grafo è una griglia
     // calcola la distanza euclidea tra due nodi che hanno coordinate x e y
     public static double euclideanDistance(Node a, Node b) {
@@ -82,22 +127,9 @@ public class Utilities {
             }
             System.out.println();
         }
-        //isConnected(nodes);
     }
 
-    // controlla se il grafo è connesso cercando nodi isolati (funziona per grafi non orientati/doppiamente orientati)
-    public static boolean isConnected(Node[] nodes){
-        for (Node node : nodes) {
-            if (node.getEdges().isEmpty()) {
-                //System.out.println("Il grafo non è connesso");
-                return false;
-            }
-        }
-        //System.out.println("Il grafo è connesso");
-        return true;
-    }
-
-    public static void writeToFile(String nomeFile, String testo){
+    public static void writeResultToFIle(String nomeFile, String testo){
         try {
             File file = new File(nomeFile);
             if (!file.exists()) {
@@ -110,6 +142,50 @@ public class Utilities {
             bufferedWriter.write(testo);
             bufferedWriter.newLine();
             bufferedWriter.close();
+            //System.out.println("Scrittura completata");
+        } catch (IOException e) {
+            System.out.println("Errore nella scrittura del file: " + e.getMessage());
+        }
+    }
+
+    public static void writeErdosRenyiGraphToFile(Node[] nodes, double probabilità){
+        int numeroNodi = nodes.length;
+        int numeroArchi = 0;
+        
+        for (Node node : nodes) {
+            numeroArchi += node.getEdges().size();
+        }
+        
+        String nomeFileNodi = "Nodes_Erdos_Renyi" + numeroNodi + "V" + probabilità + "P.txt";
+        String nomeFileArchi = "Edges_Erdos_Renyi" + numeroArchi + "E" + probabilità + "P.txt";
+
+        try {
+            File fileNodi = new File(nomeFileNodi);
+            File fileArchi = new File(nomeFileArchi);
+            if (!fileNodi.exists()) {
+                fileNodi.createNewFile();
+                System.out.println("Il file " + nomeFileNodi + " è stato creato");
+            }
+            if (!fileArchi.exists()) {
+                fileArchi.createNewFile();
+                System.out.println("Il file " + nomeFileArchi + " è stato creato");
+            }
+            FileWriter nodesWriter = new FileWriter(nomeFileNodi, true);
+            BufferedWriter nodesBufferedWriter = new BufferedWriter(nodesWriter);
+            FileWriter edgesWriter = new FileWriter(nomeFileArchi, true);
+            BufferedWriter edgesBufferedWriter = new BufferedWriter(edgesWriter);
+
+            for (Node node : nodes) {
+                nodesBufferedWriter.write(node.getLabel() + " " + node.getX() + " " + node.getY());
+                nodesBufferedWriter.newLine();
+                int counter = 0;
+                for (Edge edge : node.getEdges()) {
+                    edgesBufferedWriter.write("" + (counter+1) + " " + edge.getSrc().getLabel() + " " + edge.getDest().getLabel() + " " + edge.getCost());
+                    edgesBufferedWriter.newLine();
+                }
+            }
+            nodesBufferedWriter.close();
+            edgesBufferedWriter.close();
             //System.out.println("Scrittura completata");
         } catch (IOException e) {
             System.out.println("Errore nella scrittura del file: " + e.getMessage());

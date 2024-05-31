@@ -87,8 +87,8 @@ public class ExperimentsWithThreads {
         String resultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + probability + " " + successfulExperiments + " " + numberOfConnectedGraphs + " " + totalTime;
         System.out.println(resultsData);
         String aStarResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + probability + " " + (resAStar / numberOfExperiments);
-        Utilities.writeToFile("RisultatiThreads.txt", resultsData);
-        Utilities.writeToFile("RisultatiAStarThreads.txt", aStarResultsData);
+        Utilities.writeResultToFIle("RisultatiThreads.txt", resultsData);
+        Utilities.writeResultToFIle("RisultatiAStarThreads.txt", aStarResultsData);
     }
 
     private static List<Callable<ExperimentResult>> createTasks(int numberOfExperiments, int numberOfNodes, double probability) {

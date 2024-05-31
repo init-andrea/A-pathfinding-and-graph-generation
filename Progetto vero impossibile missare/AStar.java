@@ -7,17 +7,14 @@ import java.util.PriorityQueue;
 
 public class AStar {
 
-    public List<Node> findPath(Node start, Node goal){
-        PriorityQueue<NodeComp> openSet = new PriorityQueue<>();
-        Map<Node, NodeComp> closedSet = new HashMap<>();
+    public Result findPath(Node start, Node goal){
+        PriorityQueue<NodeComp> openSet = new PriorityQueue<>();    // nodi da esplorare
+        Map<Node, NodeComp> closedSet = new HashMap<>();            // nodi esplorati
 
         NodeComp startNode = new NodeComp(start, null, 0, Utilities.euclideanDistance(start, goal));
-        
+
         // nodi ancora da esplorare
         openSet.add(startNode);
-
-        // nodi già esplorati
-        //closedSet.put(start, startNode);
 
         while (!openSet.isEmpty()) { 
             NodeComp next = openSet.poll();
@@ -31,16 +28,17 @@ public class AStar {
             if (next.getNode().equals(goal)){
                 List<Node> path = new ArrayList<>();
                 NodeComp current = next;
+                double totalPathCost = current.getCostSoFar();
 
                 // ripercorriamo il percorso all'indietro
-                do { 
+                do {
                     path.add(current.getNode());
                     current = closedSet.get(current.getPredecessor());
                 } while (current != null);
 
                 // invertiamo il percorso per andare da start a goal
                 Collections.reverse(path);
-                return path;
+                return new Result(path, totalPathCost);
             }
 
             // se non siamo arrivati all'obiettivo
