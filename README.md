@@ -15,7 +15,8 @@ Nodes.txt
 ```
 {IDNodo} {CoordinataX} {CoordinataY}
 ```
-```
+
 Edges.txt
+```
 {IDArco} {NodoDiPartenza} {NodoDiArrivo} {Peso}
 ```
