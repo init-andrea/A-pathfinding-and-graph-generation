@@ -70,16 +70,16 @@ public class Utilities {
     }
 
     // p è la probabilità di avere un arco tra due vertici (p=1 grafo denso), n è il numero dei vertici
-    public static Node[] generateErdosRenyiGraph(int n, double p) {
+    public static Node[] generateErdosRenyiGraph(int n, double p) throws IllegalArgumentException{
 
         // Check sugli input
         if (p <= 0 || p > 1) {
-            System.out.println("La probabilità di avere un arco tra due vertici deve essere compresa tra 0 e 1");
-            return null;
+            //System.out.println("La probabilità di avere un arco tra due vertici deve essere compresa tra 0 e 1");
+            throw new IllegalArgumentException("La probabilità di avere un arco tra due vertici deve essere compresa tra 0 e 1");
         }
         if (n <= 0) {
-            System.out.println("Il numero di vertici deve essere positivo");
-            return null;
+            //System.out.println("Il numero di vertici deve essere positivo");
+            throw new IllegalArgumentException("Il numero di vertici deve essere positivo");
         }
 
         // lettura maxX e maxY da console
@@ -200,11 +200,11 @@ public class Utilities {
         Map<String, Node> nodeMap = new HashMap<>();
         Random random = new Random();
 
-        // Leggi il file Nodes.txt
+        // leggi il file Nodes.txt
         try (BufferedReader br = new BufferedReader(new FileReader(nodesFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\s+");
+                String[] parts = line.split(" ");
                 String nodeId = parts[0];
                 double x = Double.parseDouble(parts[1]);
                 double y = Double.parseDouble(parts[2]);
@@ -215,11 +215,11 @@ public class Utilities {
             throw e;
         }
 
-        // Leggi il file Edges.txt
+        // leggi il file Edges.txt
         try (BufferedReader br = new BufferedReader(new FileReader(edgesFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\s+");
+                String[] parts = line.split(" ");
                 //String edgeId = parts[0];
                 String startNodeId = parts[1];
                 String endNodeId = parts[2];
@@ -230,47 +230,16 @@ public class Utilities {
 
                 if (startNode != null && endNode != null) {
                     startNode.addEdge(endNode, distance);
-                    //double pp = random.nextDouble();
-                    //System.out.println(pp);
 
                     if (random.nextDouble() <= probability) {        // la probabilità di creare un secondo arco per grafo non orientato
                         endNode.addEdge(startNode, distance);
                     }
-
-                    //endNode.addEdge(startNode, distance);
                 }
             }
         } catch (FileNotFoundException e) {
             throw e;
         }
-
-        int counterIsolati = 0;
-        for (Node node : nodeMap.values()) {
-            if (node.getEdges().isEmpty()) {
-                counterIsolati++;
-            }
-        }
-        //System.out.print(counterIsolati + " isolati, ");
-        /*
-        // Crea una lista di nodi senza nodi isolati
-        List<Node> nodesWithEdges = new ArrayList<>();
-        int counter = 0;
-        int totCounter = 0;
-        for (Node node : nodeMap.values()) {
-            if (!node.getEdges().isEmpty()) {
-                nodesWithEdges.add(node);
-                counter++;
-                //System.out.println(counter);
-            }
-            totCounter++;
-            //System.out.println(totCounter);
-            if (totCounter==nodeMap.size()-1) break;
-        }
-
-        // Converti la lista in un array di Node
-        Node[] nodesArray = nodesWithEdges.toArray(new Node[0]);
-        return nodesArray;
-         */
+        
         Node[] nodesArray = nodeMap.values().toArray(new Node[0]);
         return nodesArray;
 

@@ -18,12 +18,14 @@ public class Experiments {
         String edgesFile = "";
         Scanner userInput = new Scanner(System.in);
 
-        int numberOfEdges = 0;
+        double totalNumberOfEdges = 0;
         int successfulExperiments = 0;
         long totalTimeAStar = 0;
         long startTimeExperiment;
         long endTimeExperiment;
         long totalTimeExperiment;
+        double totalDistance = 0;
+        double totalCalculatedDistance = 0;
         Node start, goal;
         Node[] nodes = new Node[0];
 
@@ -65,7 +67,11 @@ public class Experiments {
             case 3 -> {
                 numberOfNodes = Utilities.getInputNodesNumber(userInput);
                 probability = Utilities.getInputProbability(userInput);
-                Utilities.writeErdosRenyiGraphToFile(Utilities.generateErdosRenyiGraph(numberOfNodes, probability), probability);
+                try {
+                    Utilities.writeErdosRenyiGraphToFile(Utilities.generateErdosRenyiGraph(numberOfNodes, probability), probability);
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage());
+                }
                 return;
             }
         }
@@ -75,14 +81,19 @@ public class Experiments {
 
             // generiamo il grafo a partire dalla probabilità e numero di nodi dati
             if (usersChoice == 2) {
-                nodes = Utilities.generateErdosRenyiGraph(numberOfNodes, probability);
+                try {
+                    nodes = Utilities.generateErdosRenyiGraph(numberOfNodes, probability);
+                } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage());
+                    return;
+                }
             }
 
             //Utilities.printGraph(nodes);
             for (Node node : nodes) {
-                numberOfEdges += node.getEdges().size();
+                totalNumberOfEdges += node.getEdges().size();
             }
-            //System.out.println(numberOfEdges + " archi totali");
+            //System.out.println(totalNumberOfEdges + " archi totali");
 
             // scegliamo a caso, tra i nodi del grafo, start e goal
             start = nodes[rand.nextInt(nodes.length)];
@@ -98,6 +109,8 @@ public class Experiments {
                 List<Node> bestPath = result.getPath();
                 System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " con costo " + new DecimalFormat("#.##").format(result.getTotalCost()) + " trovato: ");
                 successfulExperiments++;
+                totalCalculatedDistance += result.getTotalCost();
+                totalDistance += Utilities.euclideanDistance(start, goal);
                 for (Node n : bestPath) {
                     System.out.print(n.getLabel() + " ");
                 }
@@ -113,13 +126,14 @@ public class Experiments {
         totalTimeExperiment = endTimeExperiment - startTimeExperiment;
         System.out.println("Esperimenti che hanno avuto successo: " + successfulExperiments + " su " + numberOfExperiments + ", " + new DecimalFormat("#.###").format(((((double) successfulExperiments / numberOfExperiments) * 100))) + "%");
         System.out.println("Tempo totale di esecuzione: " + (totalTimeExperiment / 1000000) + " ms. Tempo medio per esperimento: " + (totalTimeExperiment / numberOfExperiments) + " ns. Tempo medio di AStar per esperimento: " + (totalTimeAStar / numberOfExperiments) + " ns");
-        String resultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + numberOfEdges + " " + successfulExperiments + " " + totalTimeExperiment;
-        String aStarResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + numberOfEdges + " " + successfulExperiments + " " + totalTimeAStar;
+        String genericResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + (int)(totalNumberOfEdges/numberOfExperiments) + " " + successfulExperiments;
+        String experimentsResultsData = genericResultsData + " " + totalTimeExperiment;
+        String aStarResultsData = genericResultsData + " " + totalTimeAStar + " " + totalDistance + " " + totalCalculatedDistance;
         if (usersChoice == 1) {
-            Utilities.writeResultToFIle("Risultati" + nodesFile.substring(5), resultsData);
+            Utilities.writeResultToFIle("Risultati" + nodesFile.substring(5), experimentsResultsData);
             Utilities.writeResultToFIle("RisultatiAStar" + nodesFile.substring(5), aStarResultsData);
         } else {
-            Utilities.writeResultToFIle("Risultati.txt", resultsData);
+            Utilities.writeResultToFIle("Risultati.txt", experimentsResultsData);
             Utilities.writeResultToFIle("RisultatiAStar.txt", aStarResultsData);
         }
     }
