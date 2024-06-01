@@ -96,7 +96,7 @@ public class Experiments {
 
             if (result != null) {
                 List<Node> bestPath = result.getPath();
-                System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " con costo " + result.getTotalCost() + " trovato: ");
+                System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " con costo " + new DecimalFormat("#.##").format(result.getTotalCost()) + " trovato: ");
                 successfulExperiments++;
                 for (Node n : bestPath) {
                     System.out.print(n.getLabel() + " ");
@@ -112,7 +112,7 @@ public class Experiments {
         endTimeExperiment = System.nanoTime();
         totalTimeExperiment = endTimeExperiment - startTimeExperiment;
         System.out.println("Esperimenti che hanno avuto successo: " + successfulExperiments + " su " + numberOfExperiments + ", " + new DecimalFormat("#.###").format(((((double) successfulExperiments / numberOfExperiments) * 100))) + "%");
-        System.out.println("Tempo totale di esecuzione: " + (totalTimeExperiment / 1000000) + " ms. Tempo medio per esperimento: " + (totalTimeExperiment / numberOfExperiments) + " ns");
+        System.out.println("Tempo totale di esecuzione: " + (totalTimeExperiment / 1000000) + " ms. Tempo medio per esperimento: " + (totalTimeExperiment / numberOfExperiments) + " ns. Tempo medio di AStar per esperimento: " + (totalTimeAStar / numberOfExperiments) + " ns");
         String resultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + numberOfEdges + " " + successfulExperiments + " " + totalTimeExperiment;
         String aStarResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + numberOfEdges + " " + successfulExperiments + " " + totalTimeAStar;
         if (usersChoice == 1) {
