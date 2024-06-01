@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,7 +8,7 @@ import java.util.PriorityQueue;
 
 public class AStar {
 
-    public Result findPath(Node start, Node goal){
+    public Result findPath(Node start, Node goal) {
         PriorityQueue<NodeComp> openSet = new PriorityQueue<>();    // nodi da esplorare
         Map<Node, NodeComp> closedSet = new HashMap<>();            // nodi esplorati
 
@@ -16,7 +17,7 @@ public class AStar {
         // nodi ancora da esplorare
         openSet.add(startNode);
 
-        while (!openSet.isEmpty()) { 
+        while (!openSet.isEmpty()) {
             NodeComp next = openSet.poll();
 
             // se abbiamo già esplorato il nodo
@@ -25,7 +26,7 @@ public class AStar {
             }
 
             // se siamo arrivati all'obiettivo
-            if (next.getNode().equals(goal)){
+            if (next.getNode().equals(goal)) {
                 List<Node> path = new ArrayList<>();
                 NodeComp current = next;
                 double totalPathCost = current.getCostSoFar();
@@ -42,7 +43,7 @@ public class AStar {
             }
 
             // se non siamo arrivati all'obiettivo
-            for (Edge edge : next.getNode().getEdges()){
+            for (Edge edge : next.getNode().getEdges()) {
                 Node toNode = edge.getDest();
                 double costSoFar = next.getCostSoFar() + edge.getCost();
                 double estimatedCostTotal = costSoFar + Utilities.euclideanDistance(toNode, goal);
@@ -62,5 +63,5 @@ public class AStar {
         // non c'è nessun percorso da start a goal
         return null;
     }
-    
+
 }

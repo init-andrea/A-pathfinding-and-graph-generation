@@ -13,10 +13,10 @@ import java.util.Scanner;
 
 public class Utilities {
 
-    static final double maxXBound = 1000;
-    static final double maxYBound = 1000;
+    static final double MAX_X_BOUND = 1000;
+    static final double MAX_Y_BOUND = 1000;
 
-    public static String[] getInputFileNames(Scanner userInput){
+    public static String[] getInputFileNames(Scanner userInput) {
         String[] nomiFile = new String[2];
         System.out.println("Scrivi il nome del file con i nodi: ");
         nomiFile[0] = userInput.next();
@@ -25,7 +25,7 @@ public class Utilities {
         return nomiFile;
     }
 
-    public static int getInputNodesNumber(Scanner userInput){
+    public static int getInputNodesNumber(Scanner userInput) {
         System.out.println("Inserisci il numero di nodi del grafo e premi invio: ");
         while (!userInput.hasNextInt()) {
             userInput.next();
@@ -33,8 +33,8 @@ public class Utilities {
         }
         return userInput.nextInt();
     }
-    
-    public static int getInputExperimentsNumber(Scanner userInput){
+
+    public static int getInputExperimentsNumber(Scanner userInput) {
         System.out.println("Inserisci il numero di esperimenti da eseguire e premi invio: ");
         while (!userInput.hasNextInt()) {
             userInput.next();
@@ -42,10 +42,10 @@ public class Utilities {
         }
         return userInput.nextInt();
     }
-    
-    public static double getInputProbability(Scanner userInput){
+
+    public static double getInputProbability(Scanner userInput) {
         double probabilità;
-        System.out.println("Inserisci la probabilità (compresa tra 0 e 1) di generare un arco tra due vertici e premi invio:");
+        System.out.println("Inserisci la probabilità (compresa tra 0 e 1) di generare un arco tra due vertici e premi invio: ");
         while (true) {
             if (userInput.hasNextDouble()) {
                 probabilità = userInput.nextDouble();
@@ -60,6 +60,7 @@ public class Utilities {
             }
         }
     }
+
     // distanza euclidea come euristica nel caso generale, può essere Manhattan se il grafo è una griglia
     // calcola la distanza euclidea tra due nodi che hanno coordinate x e y
     public static double euclideanDistance(Node a, Node b) {
@@ -69,11 +70,11 @@ public class Utilities {
     }
 
     // p è la probabilità di avere un arco tra due vertici (p=1 grafo denso), n è il numero dei vertici
-    public static Node[] generateErdosRenyiGraph(int n, double p){  
-        
+    public static Node[] generateErdosRenyiGraph(int n, double p) {
+
         // Check sugli input
         if (p <= 0 || p > 1) {
-            System.out.println("La probabilità di avere un arco tra due vertici deve essere (0,1]");
+            System.out.println("La probabilità di avere un arco tra due vertici deve essere compresa tra 0 e 1");
             return null;
         }
         if (n <= 0) {
@@ -99,8 +100,8 @@ public class Utilities {
 
         // scelta maxX e maxY con Random
         Random rand = new Random(System.currentTimeMillis());
-        double maxX = rand.nextDouble(maxXBound);
-        double maxY = rand.nextDouble(maxYBound);
+        double maxX = rand.nextDouble(MAX_X_BOUND);
+        double maxY = rand.nextDouble(MAX_Y_BOUND);
 
         Node[] nodes = new Node[n];
         for (int i = 0; i < n; i++) {
@@ -122,7 +123,7 @@ public class Utilities {
         return nodes;
     }
 
-    public static void printGraph(Node[] nodes){
+    public static void printGraph(Node[] nodes) {
         for (Node node : nodes) {
             System.out.print(node.getLabel() + " (" + node.getX() + ", " + node.getY() + "): ");
             for (Edge edge : node.getEdges()) {
@@ -132,7 +133,7 @@ public class Utilities {
         }
     }
 
-    public static void writeResultToFIle(String nomeFile, String testo){
+    public static void writeResultToFIle(String nomeFile, String testo) {
         try {
             File file = new File(nomeFile);
             if (!file.exists()) {
@@ -145,22 +146,22 @@ public class Utilities {
             bufferedWriter.write(testo);
             bufferedWriter.newLine();
             bufferedWriter.close();
-            //System.out.println("Scrittura completata");
+            System.out.println("Il file " + nomeFile + " dei risultati è stato aggiornato");
         } catch (IOException e) {
             System.out.println("Errore nella scrittura del file: " + e.getMessage());
         }
     }
 
-    public static void writeErdosRenyiGraphToFile(Node[] nodes, double probabilità){
+    public static void writeErdosRenyiGraphToFile(Node[] nodes, double probabilità) {
         int numeroNodi = nodes.length;
         int numeroArchi = 0;
-        
+
         for (Node node : nodes) {
             numeroArchi += node.getEdges().size();
         }
-        
-        String nomeFileNodi = "Nodes_Erdos_Renyi" + numeroNodi + "V" + probabilità + "P.txt";
-        String nomeFileArchi = "Edges_Erdos_Renyi" + numeroArchi + "E" + probabilità + "P.txt";
+
+        String nomeFileNodi = "Nodes_Erdos_Renyi_" + numeroNodi + "V_" + probabilità + "P.txt";
+        String nomeFileArchi = "Edges_Erdos_Renyi_" + numeroArchi + "E_" + probabilità + "P.txt";
 
         try {
             File fileNodi = new File(nomeFileNodi);
@@ -183,7 +184,7 @@ public class Utilities {
                 nodesBufferedWriter.newLine();
                 int counter = 0;
                 for (Edge edge : node.getEdges()) {
-                    edgesBufferedWriter.write("" + (counter+1) + " " + edge.getSrc().getLabel() + " " + edge.getDest().getLabel() + " " + edge.getCost());
+                    edgesBufferedWriter.write("" + (counter + 1) + " " + edge.getSrc().getLabel() + " " + edge.getDest().getLabel() + " " + edge.getCost());
                     edgesBufferedWriter.newLine();
                 }
             }
@@ -198,7 +199,7 @@ public class Utilities {
     public static Node[] loadGraphFromFiles(String nodesFilePath, String edgesFilePath, double probability) throws IOException {
         Map<String, Node> nodeMap = new HashMap<>();
         Random random = new Random();
-        
+
         // Leggi il file Nodes.txt
         try (BufferedReader br = new BufferedReader(new FileReader(nodesFilePath))) {
             String line;
@@ -210,7 +211,7 @@ public class Utilities {
                 Node node = new Node(nodeId, x, y);
                 nodeMap.put(nodeId, node);
             }
-        } catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             throw e;
         }
 
@@ -231,11 +232,11 @@ public class Utilities {
                     startNode.addEdge(endNode, distance);
                     //double pp = random.nextDouble();
                     //System.out.println(pp);
-                    
+
                     if (random.nextDouble() <= probability) {        // la probabilità di creare un secondo arco per grafo non orientato
                         endNode.addEdge(startNode, distance);
                     }
-                    
+
                     //endNode.addEdge(startNode, distance);
                 }
             }
@@ -269,7 +270,7 @@ public class Utilities {
         // Converti la lista in un array di Node
         Node[] nodesArray = nodesWithEdges.toArray(new Node[0]);
         return nodesArray;
-        */
+         */
         Node[] nodesArray = nodeMap.values().toArray(new Node[0]);
         return nodesArray;
 

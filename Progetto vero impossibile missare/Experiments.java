@@ -1,4 +1,6 @@
+
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -15,7 +17,7 @@ public class Experiments {
         String nodesFile = "";
         String edgesFile = "";
         Scanner userInput = new Scanner(System.in);
-        
+
         int numberOfEdges = 0;
         int successfulExperiments = 0;
         long totalTimeAStar = 0;
@@ -24,7 +26,7 @@ public class Experiments {
         long totalTimeExperiment;
         Node start, goal;
         Node[] nodes = new Node[0];
-        
+
         Random rand = new Random(System.currentTimeMillis());
         AStar aStar = new AStar();
 
@@ -40,8 +42,8 @@ public class Experiments {
             return;
         }
 
-        switch(usersChoice){
-            case 1 ->  {
+        switch (usersChoice) {
+            case 1 -> {
                 numberOfExperiments = Utilities.getInputExperimentsNumber(userInput);
                 String[] nomi = Utilities.getInputFileNames(userInput);
                 nodesFile = nomi[0];
@@ -55,7 +57,7 @@ public class Experiments {
                 }
                 numberOfNodes = nodes.length;
             }
-            case 2 ->  {
+            case 2 -> {
                 numberOfExperiments = Utilities.getInputExperimentsNumber(userInput);
                 numberOfNodes = Utilities.getInputNodesNumber(userInput);
                 probability = Utilities.getInputProbability(userInput);
@@ -72,12 +74,11 @@ public class Experiments {
         for (int counter = 0; counter < numberOfExperiments; counter++) {
 
             // generiamo il grafo a partire dalla probabilità e numero di nodi dati
-            if (usersChoice == 2){
+            if (usersChoice == 2) {
                 nodes = Utilities.generateErdosRenyiGraph(numberOfNodes, probability);
             }
-            
-            //Utilities.printGraph(nodes);
 
+            //Utilities.printGraph(nodes);
             for (Node node : nodes) {
                 numberOfEdges += node.getEdges().size();
             }
@@ -88,14 +89,13 @@ public class Experiments {
             do {
                 goal = nodes[rand.nextInt(nodes.length)];
             } while (start == goal);
-            
 
             long startTimeAStar = System.nanoTime();
-            Result result = aStar.findPath(start, goal);              // TODO mettere counter di quanti nodi vengono visitati
+            Result result = aStar.findPath(start, goal);
             long endTimeAStar = System.nanoTime();
-            List<Node> bestPath = result.getPath();
 
-            if (bestPath != null) {
+            if (result != null) {
+                List<Node> bestPath = result.getPath();
                 System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " con costo " + result.getTotalCost() + " trovato: ");
                 successfulExperiments++;
                 for (Node n : bestPath) {
@@ -111,17 +111,16 @@ public class Experiments {
         }
         endTimeExperiment = System.nanoTime();
         totalTimeExperiment = endTimeExperiment - startTimeExperiment;
-        System.out.println("Esperimenti che hanno avuto successo: " + successfulExperiments + ", " + ((((double) successfulExperiments / numberOfExperiments) * 100)) + "%");
+        System.out.println("Esperimenti che hanno avuto successo: " + successfulExperiments + " su " + numberOfExperiments + ", " + new DecimalFormat("#.###").format(((((double) successfulExperiments / numberOfExperiments) * 100))) + "%");
         System.out.println("Tempo totale di esecuzione: " + (totalTimeExperiment / 1000000) + " ms. Tempo medio per esperimento: " + (totalTimeExperiment / numberOfExperiments) + " ns");
         String resultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + numberOfEdges + " " + successfulExperiments + " " + totalTimeExperiment;
         String aStarResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + numberOfEdges + " " + successfulExperiments + " " + totalTimeAStar;
         if (usersChoice == 1) {
-            Utilities.writeResultToFIle("Risultati" + nodesFile, resultsData);
-            Utilities.writeResultToFIle("RisultatiAStar" + nodesFile, aStarResultsData);
+            Utilities.writeResultToFIle("Risultati" + nodesFile.substring(5), resultsData);
+            Utilities.writeResultToFIle("RisultatiAStar" + nodesFile.substring(5), aStarResultsData);
         } else {
             Utilities.writeResultToFIle("Risultati.txt", resultsData);
             Utilities.writeResultToFIle("RisultatiAStar.txt", aStarResultsData);
         }
-        
     }
 }

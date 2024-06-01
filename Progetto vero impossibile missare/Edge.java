@@ -1,4 +1,6 @@
+
 public class Edge {
+
     private Node src, dest;
     private double cost;
 
@@ -8,7 +10,15 @@ public class Edge {
         this.cost = cost;
     }
 
-    public Node getSrc() {return src;}
-    public Node getDest() {return dest;}
-    public double getCost() {return cost;}
+    public Node getSrc() {
+        return src;
+    }
+
+    public Node getDest() {
+        return dest;
+    }
+
+    public double getCost() {
+        return cost;
+    }
 }

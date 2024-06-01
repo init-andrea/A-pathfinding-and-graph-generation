@@ -1,7 +1,9 @@
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
+
     private String label;
     private double x, y;
     private List<Edge> edges;
@@ -22,7 +24,7 @@ public class Node {
         this.edges = edges;
     }
 
-    public boolean hasEdge(Node to){
+    public boolean hasEdge(Node to) {
         for (Edge edge : edges) {
             if (edge.getDest().equals(to)) {
                 return true;
@@ -31,27 +33,27 @@ public class Node {
         return false;
     }
 
-    public double getX(){
+    public double getX() {
         return this.x;
     }
 
-    public double getY(){
+    public double getY() {
         return this.y;
     }
 
-    public String getLabel(){
+    public String getLabel() {
         return this.label;
     }
 
-    public void addEdge(Node to, double cost){
+    public void addEdge(Node to, double cost) {
         edges.add(new Edge(this, to, cost));
     }
 
-    public void setEdges(List<Edge> edges){
+    public void setEdges(List<Edge> edges) {
         this.edges = edges;
     }
 
-    public List<Edge> getEdges(){
+    public List<Edge> getEdges() {
         return this.edges;
     }
 
