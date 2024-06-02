@@ -12,10 +12,10 @@ public class AStar {
         PriorityQueue<NodeComp> openSet = new PriorityQueue<>();    // nodi da esplorare
         Map<Node, NodeComp> closedSet = new HashMap<>();            // nodi esplorati
 
-        NodeComp startNode = new NodeComp(start, null, 0, Utilities.euclideanDistance(start, goal));
+        NodeComp startComp = new NodeComp(start, null, 0, Utilities.euclideanDistance(start, goal));
 
         // nodi ancora da esplorare
-        openSet.add(startNode);
+        openSet.add(startComp);
 
         while (!openSet.isEmpty()) {
             NodeComp next = openSet.poll();

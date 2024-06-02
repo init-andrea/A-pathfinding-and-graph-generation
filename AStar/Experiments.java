@@ -47,9 +47,9 @@ public class Experiments {
         switch (usersChoice) {
             case 1 -> {
                 numberOfExperiments = Utilities.getInputExperimentsNumber(userInput);
-                String[] nomi = Utilities.getInputFileNames(userInput);
-                nodesFile = nomi[0];
-                edgesFile = nomi[1];
+                String[] names = Utilities.getInputFileNames(userInput);
+                nodesFile = names[0];
+                edgesFile = names[1];
                 probability = Utilities.getInputProbability(userInput);
                 try {
                     nodes = Utilities.loadGraphFromFiles(nodesFile, edgesFile, probability);
