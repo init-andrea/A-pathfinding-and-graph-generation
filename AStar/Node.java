@@ -45,6 +45,10 @@ public class Node {
         return this.label;
     }
 
+    public String getLabel(int add){
+        return Integer.toString(Integer.parseInt(this.label) + 1);
+    }
+
     public void addEdge(Node to, double cost) {
         edges.add(new Edge(this, to, cost));
     }

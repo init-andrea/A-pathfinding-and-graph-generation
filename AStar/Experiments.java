@@ -68,7 +68,7 @@ public class Experiments {
                 numberOfNodes = Utilities.getInputNodesNumber(userInput);
                 probability = Utilities.getInputProbability(userInput);
                 try {
-                    Utilities.writeErdosRenyiGraphToFile(Utilities.generateErdosRenyiGraph(numberOfNodes, probability), probability);
+                    Utilities.writeErdosRenyiGraphToFile(GraphGeneration.generateErdosRenyiGraph(numberOfNodes, probability), probability);
                 } catch (IllegalArgumentException e) {
                     System.err.println(e.getMessage());
                 }
@@ -82,7 +82,7 @@ public class Experiments {
             // generiamo il grafo a partire dalla probabilità e numero di nodi dati
             if (usersChoice == 2) {
                 try {
-                    nodes = Utilities.generateErdosRenyiGraph(numberOfNodes, probability);
+                    nodes = GraphGeneration.generateErdosRenyiGraph(numberOfNodes, probability);
                 } catch (IllegalArgumentException e) {
                     System.err.println(e.getMessage());
                     return;
