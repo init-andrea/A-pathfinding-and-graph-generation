@@ -1,8 +1,8 @@
 import java.util.Random;
 
 public class GraphGeneration{
-    static final double MAX_X_BOUND = 1000;
-    static final double MAX_Y_BOUND = 1000;
+    static final double MAX_X_BOUND = 100000;
+    static final double MAX_Y_BOUND = 100000;
     
     // p è la probabilità di avere un arco tra due vertici (p=1 grafo denso), n è il numero dei vertici
     public static Node[] generateErdosRenyiGraph(int n, double p) throws IllegalArgumentException{

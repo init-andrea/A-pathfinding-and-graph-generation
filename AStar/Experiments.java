@@ -20,6 +20,7 @@ public class Experiments {
 
         double totalNumberOfEdges = 0;
         int successfulExperiments = 0;
+        long totalTimeGraphGen = 0;
         long totalTimeAStar = 0;
         long startTimeExperiment;
         long endTimeExperiment;
@@ -82,7 +83,10 @@ public class Experiments {
             // generiamo il grafo a partire dalla probabilità e numero di nodi dati
             if (usersChoice == 2) {
                 try {
+                    long startTimeGraphGen = System.nanoTime();
                     nodes = GraphGeneration.generateErdosRenyiGraph(numberOfNodes, probability);
+                    long endTimeGraphGen = System.nanoTime();
+                    totalTimeGraphGen += (endTimeGraphGen - startTimeGraphGen);
                 } catch (IllegalArgumentException e) {
                     System.err.println(e.getMessage());
                     return;
@@ -107,16 +111,16 @@ public class Experiments {
 
             if (result != null) {
                 List<Node> bestPath = result.getPath();
-                System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " con costo " + new DecimalFormat("#.##").format(result.getTotalCost()) + " trovato: ");
+                //System.out.println("Percorso da " + start.getLabel() + " a " + goal.getLabel() + " con costo " + new DecimalFormat("#.##").format(result.getTotalCost()) + " trovato: ");
                 successfulExperiments++;
                 totalCalculatedDistance += result.getTotalCost();
                 totalDistance += Utilities.euclideanDistance(start, goal);
                 for (Node n : bestPath) {
-                    System.out.print(n.getLabel() + " ");
+                    //System.out.print(n.getLabel() + " ");
                 }
-                System.out.println();
+                //System.out.println();
             } else {
-                System.out.println("Nessun percorso trovato");
+                //System.out.println("Nessun percorso trovato");
             }
 
             //System.out.println("Tempo di esecuzione esperimento " + counter + " : " + (endTime - startTime) + " ns");
@@ -126,15 +130,17 @@ public class Experiments {
         totalTimeExperiment = endTimeExperiment - startTimeExperiment;
         System.out.println("Esperimenti che hanno avuto successo: " + successfulExperiments + " su " + numberOfExperiments + ", " + new DecimalFormat("#.###").format(((((double) successfulExperiments / numberOfExperiments) * 100))) + "%");
         System.out.println("Tempo totale di esecuzione: " + (totalTimeExperiment / 1000000) + " ms. Tempo medio per esperimento: " + (totalTimeExperiment / numberOfExperiments) + " ns. Tempo medio di AStar per esperimento: " + (totalTimeAStar / numberOfExperiments) + " ns");
-        String genericResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + (int)(totalNumberOfEdges/numberOfExperiments) + " " + successfulExperiments;
+        String genericResultsData = "" + numberOfExperiments + " " + numberOfNodes + " " + probability + " " + (int)(totalNumberOfEdges/numberOfExperiments) + " " + successfulExperiments;
         String experimentsResultsData = genericResultsData + " " + totalTimeExperiment;
-        String aStarResultsData = genericResultsData + " " + totalTimeAStar + " " + totalDistance + " " + totalCalculatedDistance;
+        String generationResultsData = genericResultsData + " " + totalTimeGraphGen;
+        String aStarResultsData = genericResultsData + " " + totalTimeAStar + " " + new DecimalFormat("#.#####").format(totalDistance) + " " + new DecimalFormat("#.#####").format(totalCalculatedDistance);
         if (usersChoice == 1) {
-            Utilities.writeResultToFIle("Risultati" + nodesFile.substring(5), experimentsResultsData);
-            Utilities.writeResultToFIle("RisultatiAStar" + nodesFile.substring(5), aStarResultsData);
+            Utilities.writeResultToFile("Risultati" + nodesFile.substring(5), experimentsResultsData);
+            Utilities.writeResultToFile("RisultatiAStar" + nodesFile.substring(5), aStarResultsData);
         } else {
-            Utilities.writeResultToFIle("Risultati.txt", experimentsResultsData);
-            Utilities.writeResultToFIle("RisultatiAStar.txt", aStarResultsData);
+            Utilities.writeResultToFile("Risultati.txt", experimentsResultsData);
+            Utilities.writeResultToFile("RisultatiGenerazione.txt", generationResultsData);
+            Utilities.writeResultToFile("RisultatiAStar.txt", aStarResultsData);
         }
     }
 }

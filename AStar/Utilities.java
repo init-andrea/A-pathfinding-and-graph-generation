@@ -79,7 +79,7 @@ public class Utilities {
         }
     }
 
-    public static void writeResultToFIle(String nomeFile, String testo) {
+    public static void writeResultToFile(String nomeFile, String testo) {
         try {
             File file = new File(nomeFile);
             if (!file.exists()) {
@@ -175,7 +175,7 @@ public class Utilities {
                 Node startNode = nodeMap.get(startNodeId);
                 Node endNode = nodeMap.get(endNodeId);
 
-                if (startNode != null && endNode != null) {
+                if (startNode != null && endNode != null && !startNode.hasEdge(endNode) && !endNode.hasEdge(startNode)) {
                     startNode.addEdge(endNode, distance);
 
                     if (random.nextDouble() <= probability) {        // la probabilità di creare un secondo arco per grafo non orientato
